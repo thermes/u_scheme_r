@@ -6,9 +6,9 @@ def _eval(exp)
       lookup_primitive_fun(exp)
     end
   else
-    fun = _eval(car(exp))
+    fun  = _eval(car(exp))
     args = eval_list(cdr(exp))
-    apply(fun,args)
+    apply(fun, args)
   end
 end
 
@@ -21,9 +21,9 @@ def lookup_primitive_fun(exp)
 end
 
 $primitive_fun_env = {
-    :+ => [:prim, lambda{|x, y| x + y}],
-    :- => [:prim, lambda{|x, y| x - y}],
-    :* => [:prim, lambda{|x, y| x * y}],
+    :+ => [:prim, lambda { |x, y| x + y }],
+    :- => [:prim, lambda { |x, y| x - y }],
+    :* => [:prim, lambda { |x, y| x * y }],
 }
 
 def car(list)
@@ -35,7 +35,7 @@ def cdr(list)
 end
 
 def eval_list(exp)
-  exp.map{|e| _eval(e)}
+  exp.map { |e| _eval(e) }
 end
 
 def immediate_val?(exp)
