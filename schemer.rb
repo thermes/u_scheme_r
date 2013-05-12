@@ -283,6 +283,15 @@ def quote?(exp)
   exp[0] == :quote
 end
 
+def parse(exp)
+  program = exp.strip().
+      gsub(/[a-zA-Z\+\-\*><=][0-9a-zA-Z\+\-=!*]*/, ':\\0').
+      gsub(/\s+/, ', ').
+      gsub(/\(/, '[').
+      gsub(/\)/, ']')
+  eval(program)
+end
+
 $list_env = {
     :nil   => [],
     :null? => [:prim, lambda { |list| null?(list) }],
@@ -302,5 +311,5 @@ exp =
       [:+, [:length, [:cdr, :list]], 1]]]
 puts _eval(exp, $global_env)
 
-exp = [:length, [:quote, [1, 2, 3]]]
-puts _eval(exp, $global_env)
+exp = '(length (quote (1 2 3)))'
+puts _eval(parse(exp), $global_env)
