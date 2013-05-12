@@ -22,7 +22,8 @@ def special_form?(exp)
       letrec?(exp) or
       if?(exp) or
       cond?(exp) or
-      define?(exp)
+      define?(exp) or
+      quote?(exp)
 end
 
 def lambda?(exp)
@@ -42,6 +43,8 @@ def eval_special_form(exp, env)
     eval_cond(exp, env)
   elsif define?(exp)
     eval_define(exp, env)
+  elsif quote?(exp)
+    eval_quote(exp, env)
   end
 end
 
@@ -272,6 +275,14 @@ def cond?(exp)
   exp[0] == :cond
 end
 
+def eval_quote(exp, env)
+  car(cdr(exp))
+end
+
+def quote?(exp)
+  exp[0] == :quote
+end
+
 $list_env = {
     :nil   => [],
     :null? => [:prim, lambda { |list| null?(list) }],
@@ -285,9 +296,11 @@ $boolean_env = {true: true, false: false}
 $global_env = [$list_env, $primitive_fun_env, $boolean_env]
 
 exp =
-    [:cond,
-     [[:>, 1, 1], 1],
-     [[:>, 2, 1], 2],
-     [[:>, 3, 1], 3],
-     [:else, -1]]
+    [:define, [:length, :list],
+     [:if, [:null?, :list],
+      0,
+      [:+, [:length, [:cdr, :list]], 1]]]
+puts _eval(exp, $global_env)
+
+exp = [:length, [:quote, [1, 2, 3]]]
 puts _eval(exp, $global_env)
