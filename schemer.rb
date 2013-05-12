@@ -183,9 +183,33 @@ def letrec?(exp)
   exp[0] == :letrec
 end
 
-$boolean_env = {true: true, false: false}
-$global_env = [$primitive_fun_env, $boolean_env]
+def null?(list)
+  list == []
+end
 
+def cons(a, b)
+  if not list?(b)
+    raise "sorry, we haven't implemented yet..."
+  else
+    [a] + b
+  end
+end
+
+def list(*list)
+  list
+end
+
+$list_env = {
+    :nil   => [],
+    :null? => [:prim, lambda { |list| null?(list) }],
+    :cons  => [:prim, lambda { |a, b| cons(a, b) }],
+    :car   => [:prim, lambda { |list| car(list) }],
+    :cdr   => [:prim, lambda { |list| cdr(list) }],
+    :list  => [:prim, lambda { |*list| list(*list) }],
+}
+
+$boolean_env = {true: true, false: false}
+$global_env = [$list_env, $primitive_fun_env, $boolean_env]
 
 exp =
     [:letrec,
